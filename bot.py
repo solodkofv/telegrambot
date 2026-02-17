@@ -1,7 +1,7 @@
 import asyncio
 import os
 from aiogram import Bot, Dispatcher, F
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton, FSInputFile
 from aiogram.filters import CommandStart
 from aiogram.enums import ParseMode
 from dotenv import load_dotenv
@@ -15,6 +15,9 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 # Создаем бота и диспетчер
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
+
+# Путь к фото-пруфу
+PHOTO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Прикрепи фото.jpg")
 
 # Тексты для разделов (настрой под себя)
 TEXTS = {
@@ -104,6 +107,12 @@ async def cmd_start(message: Message):
 
 👇 Хочу доступ за 690₽! 👇"""
 
+    photo = FSInputFile(PHOTO_PATH)
+    await message.answer_photo(
+        photo=photo,
+        caption="📸 Вот что ты получишь после покупки 👆",
+        parse_mode=ParseMode.HTML
+    )
     await message.answer(
         welcome_text,
         reply_markup=get_main_keyboard(),
