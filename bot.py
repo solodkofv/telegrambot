@@ -35,13 +35,13 @@ PHOTO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "пере�
 pending_payments = {}
 
 # Цена доступа
-PRICE_RUB = 690
+PRICE_RUB = 390
 
 # Тексты для разделов
 TEXTS = {
     "payment": """💳 <b>Оплата доступа</b>
 
-Стоимость: <b>690 ₽</b>
+Стоимость: <s>990 ₽</s>  <b>390 ₽</b> 🔥
 
 Выберите удобный способ оплаты:""",
 
@@ -232,14 +232,14 @@ WELCOME_TEXT = """✅ Встречайте обновленный архив!
 💸 Главный козырь — ЦЕНА!
 Самые низкие цены и лучшее качество на рынке.
 
-⏰ ВСЕГО 690 РУБЛЕЙ
+⏰ <s>990 ₽</s>  ВСЕГО <b>390 РУБЛЕЙ</b>
 Это дешевле, чем сходить в кино, а удовольствия — на годы вперёд! 🎬🚫
 Никакой ежемесячной подписки. Платишь один раз — пользуешься всегда.
 
 💣 Пока думаешь — кто-то другой уже смотрит.
-Жми кнопку и забирай вечный доступ за 690₽, пока цена не выросла!
+Жми кнопку и забирай вечный доступ за 390₽, пока цена не выросла!
 
-👇 Хочу доступ за 690₽! 👇"""
+👇 Хочу доступ за 390₽! 👇"""
 
 
 # ==================== Обработчики ====================
@@ -305,7 +305,7 @@ async def process_pay_sbp(callback: CallbackQuery):
 
     # Отправляем ссылку на оплату
     pay_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="💳 Оплатить 690₽ (СБП)", url=redirect_url)],
+        [InlineKeyboardButton(text="💳 Оплатить 390₽ (СБП)", url=redirect_url)],
         [InlineKeyboardButton(text="🔄 Проверить оплату", callback_data=f"check_{transaction_id}")],
         [InlineKeyboardButton(text="◀️ Назад в меню", callback_data="back")]
     ])
@@ -357,7 +357,7 @@ async def process_pay_crypto(callback: CallbackQuery):
 
     # Отправляем ссылку на оплату
     pay_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="₿ Оплатить 690₽ (Крипто)", url=redirect_url)],
+        [InlineKeyboardButton(text="₿ Оплатить 390₽ (Крипто)", url=redirect_url)],
         [InlineKeyboardButton(text="🔄 Проверить оплату", callback_data=f"check_{transaction_id}")],
         [InlineKeyboardButton(text="◀️ Назад в меню", callback_data="back")]
     ])
