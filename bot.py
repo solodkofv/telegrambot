@@ -29,7 +29,7 @@ bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
 # Путь к фото-пруфу
-PHOTO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Прикрепи фото.jpg")
+PHOTO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "перед покупкой.jpg")
 
 # Хранилище активных платежей: {transaction_id: {"user_id": ..., "method": ...}}
 pending_payments = {}
