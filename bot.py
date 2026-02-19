@@ -68,8 +68,11 @@ TEXTS = {
 
 # ==================== Platega API ====================
 
-async def platega_create_payment(payment_method: int, amount: float, user_id: int) -> dict | None:
+async def platega_create_payment(payment_method: int, amount: float, user_id: int) -> dict | str:
     """Создаёт платёж через Platega API и возвращает данные транзакции."""
+    if not PLATEGA_MERCHANT_ID or not PLATEGA_SECRET:
+        return f"ENV не заданы: MERCHANT_ID={'да' if PLATEGA_MERCHANT_ID else 'нет'}, SECRET={'да' if PLATEGA_SECRET else 'нет'}"
+
     url = f"{PLATEGA_BASE_URL}/transaction/process"
     headers = {
         "X-MerchantId": PLATEGA_MERCHANT_ID,
@@ -90,17 +93,17 @@ async def platega_create_payment(payment_method: int, amount: float, user_id: in
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(url, json=body, headers=headers) as resp:
+                text = await resp.text()
                 if resp.status == 200:
-                    data = await resp.json()
+                    data = await resp.json(content_type=None)
                     logger.info(f"Платёж создан: {data}")
                     return data
                 else:
-                    text = await resp.text()
                     logger.error(f"Ошибка создания платежа: {resp.status} — {text}")
-                    return None
+                    return f"HTTP {resp.status}: {text[:200]}"
     except Exception as e:
         logger.error(f"Ошибка запроса к Platega: {e}")
-        return None
+        return f"Exception: {e}"
 
 
 async def platega_check_status(transaction_id: str) -> dict | None:
@@ -280,9 +283,11 @@ async def process_pay_sbp(callback: CallbackQuery):
         user_id=user_id,
     )
 
-    if not data or not data.get("redirect"):
+    if isinstance(data, str) or not isinstance(data, dict) or not data.get("redirect"):
+        error_detail = data if isinstance(data, str) else str(data)
         await callback.message.edit_text(
-            "❌ <b>Ошибка создания платежа</b>\n\n"
+            f"❌ <b>Ошибка создания платежа</b>\n\n"
+            f"<code>{error_detail[:300]}</code>\n\n"
             "Попробуйте позже или напишите @vippomosh",
             reply_markup=get_back_keyboard(),
             parse_mode=ParseMode.HTML,
@@ -330,9 +335,11 @@ async def process_pay_crypto(callback: CallbackQuery):
         user_id=user_id,
     )
 
-    if not data or not data.get("redirect"):
+    if isinstance(data, str) or not isinstance(data, dict) or not data.get("redirect"):
+        error_detail = data if isinstance(data, str) else str(data)
         await callback.message.edit_text(
-            "❌ <b>Ошибка создания платежа</b>\n\n"
+            f"❌ <b>Ошибка создания платежа</b>\n\n"
+            f"<code>{error_detail[:300]}</code>\n\n"
             "Попробуйте позже или напишите @vippomosh",
             reply_markup=get_back_keyboard(),
             parse_mode=ParseMode.HTML,
